@@ -4,9 +4,9 @@
   "private": true,
   "description": "Layanan Aduan Lab Informatika",
   "dependencies": {
-    "resend": "^3.6.0"
+    "resend": "^6.12.4"
   },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   }
 }
