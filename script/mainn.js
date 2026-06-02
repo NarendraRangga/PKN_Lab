@@ -196,6 +196,54 @@ async function logout() {
   window.location.href = "../index.html";
 }
 
+const modalAkun = document.getElementById("modalAkun");
+const formAkun = document.getElementById("formAkun");
+
+function bukaModalAkun() {
+  if (modalAkun) modalAkun.style.display = "flex";
+}
+
+function tutupModalAkun() {
+  if (modalAkun) modalAkun.style.display = "none";
+  if (formAkun) formAkun.reset();
+}
+
+async function simpanAkun() {
+  const emailInput = document.getElementById("akunEmail");
+  const passwordInput = document.getElementById("akunPassword");
+  
+  if (!emailInput || !passwordInput) return;
+  
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+      window.alert("Email dan password wajib diisi.");
+      return;
+  }
+
+  if (!window.supabaseClient) {
+      window.alert("Sistem belum siap. Coba lagi nanti.");
+      return;
+  }
+
+  try {
+      const { data, error } = await window.supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+      });
+
+      if (error) {
+          throw error;
+      }
+
+      window.alert("Akun berhasil dibuat!");
+      tutupModalAkun();
+  } catch (error) {
+      window.alert("Gagal membuat akun: " + error.message);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", muatDataTabel);
 
 window.editData = editData;
@@ -205,4 +253,5 @@ window.tutupModal = tutupModal;
 window.pindahTab = pindahTab;
 window.bukaModalAkun = bukaModalAkun;
 window.tutupModalAkun = tutupModalAkun;
+window.simpanAkun = simpanAkun;
 window.logout = logout;
