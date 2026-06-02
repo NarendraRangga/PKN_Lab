@@ -176,7 +176,49 @@ function pindahTab(namaTab) {
   } else if (namaTab === "akun") {
     document.getElementById("sectionAkun").style.display = "block";
     document.getElementById("tabAkun").classList.add("active");
+    muatDataAkun();
   }
+}
+
+async function muatDataAkun() {
+  const tableAkunBody = document.getElementById("tableAkunBody");
+  if (!tableAkunBody) return;
+  
+  if (!window.supabaseClient) {
+      tableAkunBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Sistem belum siap.</td></tr>`;
+      return;
+  }
+  
+  try {
+      const { data, error } = await window.supabaseClient.from('profiles').select('*');
+      
+      if (error) throw error;
+      
+      tableAkunBody.innerHTML = "";
+      if (data.length === 0) {
+          tableAkunBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Belum ada akun</td></tr>`;
+          return;
+      }
+      
+      data.forEach(akun => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+              <td>${akun.id.slice(0, 8)}...</td>
+              <td>${akun.email}</td>
+              <td>Aktif</td>
+              <td class="text-center">
+                  <button class="btn-danger" onclick="hapusAkun('${akun.id}')">Hapus</button>
+              </td>
+          `;
+          tableAkunBody.appendChild(tr);
+      });
+  } catch (error) {
+      tableAkunBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: red;">Gagal memuat akun: ${error.message}</td></tr>`;
+  }
+}
+
+function hapusAkun(id) {
+  window.alert("Penghapusan akun sementara hanya dapat dilakukan melalui Supabase Dashboard.");
 }
 
 function bukaModalAkun() {
