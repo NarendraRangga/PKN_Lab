@@ -1,0 +1,101 @@
+* {
+    overflow: -moz-hidden-unscrollable;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Crucial: Ensures padding doesn't break widths */
+}
+
+:root {
+    --primary-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --nav-bg: #ffffff;
+    --text-color: #111111;
+    --hover-bg: aliceblue;
+
+}
+
+
+body {
+    min-height: 100vh;
+    /* background-image: url("../assets/bg.jpg"); Uncomment and add real path */
+    background-color: #f4f7f6; /* Good fallback if image doesn't load */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; /* Ensures background image covers the whole screen */
+    font-family: var(--primary-font);
+    color: var(--text-color);
+}
+
+header {
+    position: sticky; /* Keeps navbar at the top when scrolling */
+    top: 0;
+    z-index: 100;
+}
+
+nav {
+    background-color: var(--nav-bg);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Fixed RGB alpha syntax */
+    padding: 10px 10px 10px 10px;
+}
+
+nav ul {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto; /* Centers the navbar content on huge screens */
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Automatically pushes logo left and login right */
+ 
+}
+
+nav li {
+    height: 60px; /* Slightly taller for better clicking/tapping */
+}
+
+nav a {
+    height: 100%;
+    padding: 0 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Logo Styling */
+.logo {
+    display: flex;
+    align-items: flex-start;
+}
+
+.iconums {
+    width: 200px;
+    object-fit: contain;
+}
+footer{
+    text-align: center;
+    position: relative;
+}
+
+main {
+    padding: 60px 20px;
+    text-align: center; /* Centers your header text */
+}
+
+h1 {
+    line-height: 1.4;
+    color: #222;
+}
+@media (max-width: 600px) {
+    .iconums {
+        width: 150px; /* Make logo a bit smaller on phones */
+    }
+    
+    h1 {
+        font-size: 1.5rem; /* Scales text down for readability */
+    }
+    footer{
+        font-size: small;
+    }
+}

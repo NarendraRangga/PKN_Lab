@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin</title>
+        <link rel="stylesheet" href="/real/style/styleee.css">
+        <link rel="stylesheet" href="/real/style/main.css">
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul class="nav-links">
+                    <li class="logo">
+                        <!-- Added an alt attribute for accessibility -->
+                        <a href="index.html">
+                            <img src="../assets/Resmi_Logo_UMS_Color_FullText.png" alt="Logo" class="iconums">
+                        </a>
+                    </li>
+                    ADMIN
+                </ul>
+            </nav>
+        </header>
+        <main class="admin-main">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <h2>Dashboard Admin</h2>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Logout
+                </button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" id="tabAduan" onclick="pindahTab('aduan')">Data Pengaduan</button>
+                <button class="tab-btn" id="tabAkun" onclick="pindahTab('akun')">Data Akun</button>
+            </div>
+
+            <div id="sectionAduan">
+                <div class="admin-card">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Nama</th>
+                                    <th>Laboratorium</th>
+                                    <th>Uraian</th>
+                                    <th>Bukti Foto</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sectionAkun" style="display: none;">
+                <div class="section-header">
+                    <button class="btn-submit" onclick="bukaModalAkun()">+ Tambah Akun</button>
+                </div>
+                <div class="admin-card">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Akun</th>
+                                    <th>Email</th>
+                                    <th>Status Password</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableAkunBody">
+                                <tr>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="editModal" class="modal-overlay" style="display: none;">
+                <div class="modal-card">
+                    <h3>Edit Uraian Aduan</h3>
+                    <form id="editForm">
+                        <input type="hidden" id="editId">
+                        <div class="form-group full-width">
+                            <textarea id="editUraian" rows="4" class="admin-textarea"></textarea>
+                        </div>
+                        <div class="form-actions admin-modal-actions">
+                            <button type="button" class="btn-secondary" onclick="tutupModal()">Batal</button>
+                            <button type="button" class="btn-submit" onclick="simpanEdit()">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="modalAkun" class="modal-overlay" style="display: none;">
+                <div class="modal-card">
+                    <h3 id="modalAkunTitle">Tambah Akun Baru</h3>
+                    <form id="formAkun">
+                        <input type="hidden" id="akunId"> <div class="form-group full-width">
+                            <label for="akunEmail">Alamat Email</label>
+                            <input type="email" id="akunEmail" class="admin-input" placeholder="contoh@domain.com" required>
+                        </div>
+                        
+                        <div class="form-group full-width" style="margin-top: 1rem;">
+                            <label for="akunPassword">Password Baru</label>
+                            <input type="password" id="akunPassword" class="admin-input" placeholder="Masukkan password" required>
+                        </div>
+
+                        <div class="form-actions admin-modal-actions">
+                            <button type="button" class="btn-secondary" onclick="tutupModalAkun()">Batal</button>
+                            <button type="button" class="btn-submit" onclick="simpanAkun()">Simpan Akun</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        </body>
+    <script src="../script/mainn.js"></script>
+</html>

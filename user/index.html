@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission</title>
+    <link rel="stylesheet" href="../style/main.css">
+    <link rel="stylesheet" href="../style/stylee.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li class="logo">
+                    <a href="index.html">
+                        <img src="../assets/Resmi_Logo_UMS_Color_FullText.png" alt="Logo" class="iconums">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+<main class="main-content">
+    <div class="form-container">
+        
+        <div class="form-header">
+            <h2>Formulir Pengaduan</h2>
+            <p>Silahkan isi detail aduan pada form di bawah ini.</p>
+        </div>
+
+        <form class="report-form" method="post" enctype="multipart/form-data">
+            <div class="form-grid">
+                
+                <div class="form-group">
+                    <label for="Name">Nama Lengkap</label>
+                    <input type="text" name="Nama" id="Name" placeholder="Masukkan nama Anda" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="LabFki">Pilih Laboratorium</label>
+                    <select name="Lab" id="LabFki">
+                        <option value="SistemCerdas">Sistem Cerdas</option>
+                        <option value="KomputerFKI">Komputer FKI</option>
+                        <option value="SistemInformasi">Sistem Informasi</option>
+                        <option value="RekayasaPerangkatLunak">Rekayasa Perangkat Lunak</option>
+                        <option value="JaringanKomputer">Jaringan Komputer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="DateTime">Tanggal Laporan</label>
+                    <input type="date" id="DateTime" name="DateTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ReportType">Jenis Aduan</label>
+                    <select name="JenisAduan" id="ReportType">
+                        <option value="Fasilitas">Fasilitas</option>
+                        <option value="Layanan">Layanan</option>
+                        <option value="JadwalPraktikum">Jadwal Praktikum</option>
+                        <option value="Keselamatan">Keselamatan Kesehatan Kerja (K3)</option>
+                        <option value="Other">Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="Uraian">Uraian Aduan</label>
+                    <textarea id="Uraian" name="Uraian" placeholder="Jelaskan detail aduan... (contoh: aplikasi komputer ini tidak bisa digunakan)" rows="4" required></textarea>
+
+                    <label for="BuktiFoto">Upload Bukti Foto (Opsional)</label>
+                    <input type="file" id="BuktiFoto" name="BuktiFoto" accept="image/png, image/jpeg, image/jpg" capture="environment" class="file-input">
+                    <small class="form-help">Format yang didukung: JPG, JPEG, PNG. Maksimal ukuran file: 2MB.</small>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Kirim Laporan</button>
+            </div>
+        </form>
+
+    </div>
+</main>
+</body>
+</html>

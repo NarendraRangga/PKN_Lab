@@ -1,0 +1,359 @@
+/* Hover effect specifically for the login button, not the logo */
+nav a.btn-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Matching the Hero Primary Colors */
+    background-color: #201b86; /* Indigo 600 */
+    color: #ffffff;
+    border: none;
+    
+    /* Layout & Sizing */
+    padding: 0.5rem 1.5rem;
+    height: 42px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    font-family: system-ui, -apple-system, sans-serif;
+    margin-top: 5px;
+    
+    /* Smooth Transitions & Shadow */
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+    transition: all 0.25s ease;
+}
+
+nav a.btn-login:hover {
+    background-color: #4338ca; /* Indigo 700 */
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
+}
+
+
+
+.modal {
+    display: none; /* Hidden by default; JS will change this to 'flex' */
+    position: fixed;
+    z-index: 1000; /* Puts it on top of everything else */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Black with 60% opacity */
+    align-items: center;
+    justify-content: center;
+}
+
+/* The white login box */
+.modal-content {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    position: relative; /* Allows absolute positioning for the close button */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: left;
+    animation: fadeIn 0.3s ease; /* Optional: smooth fade-in */
+}
+
+/* Close Button (the 'x') */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: crimson;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #111;
+}
+
+/* Form Styling */
+.modal-content h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #222;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Simple animation to make it pop up smoothly */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+.hero-section {
+    --hero-primary: #4f46e5;
+    --hero-primary-hover: #4338ca;
+    --hero-text-main: #0f172a;
+    --hero-text-muted: #64748b;
+    --hero-bg: #f8fafc;
+    --hero-border: #e2e8f0;
+
+    color: var(--hero-text-main);
+
+}
+
+.hero-container {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--hero-primary);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.hero-highlight {
+    color: #201b86;
+}
+
+.hero-description {
+    font-size: clamp(1rem, 3vw, 1.125rem);
+    color: var(--hero-text-muted);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column; /* Stacked on mobile */
+    gap: 1rem;
+    width: 100%;
+}
+
+.hero-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.hero-btn-primary {
+    background-color: #201b86;
+    color: #ffffff;
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
+}
+
+.hero-btn-primary:hover {
+    background-color: var(--hero-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.4);
+}
+
+.hero-btn-secondary {
+    background-color: #ffffff;
+    color: var(--hero-text-main);
+    border: 1px solid var(--hero-border);
+}
+
+.hero-btn-secondary:hover {
+    border-color: #cbd5e1;
+    background-color: #f1f5f9;
+}
+
+/* =========================================
+   4. VISUAL EFFECTS (HIDDEN ON MOBILE)
+   ========================================= */
+.hero-visual {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    display: none; /* Hidden on mobile */
+}
+
+.hero-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.hero-shape-1 {
+    background: #81f8c6;
+    width: 300px;
+    height: 300px;
+    top: -20px;
+    right: -20px;
+}
+
+.hero-shape-2 {
+    background: #fffb19;
+    width: 250px;
+    height: 250px;
+    bottom: -20px;
+    left: 20px;
+}
+
+.hero-glass-card {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+    transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+    transition: transform 0.5s ease;
+}
+
+.hero-glass-card:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+}
+
+.hero-header {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--hero-border);
+    padding-bottom: 1rem;
+}
+
+.hero-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.hero-dot-red { background: #ef4444; }
+.hero-dot-yellow { background: #eab308; }
+.hero-dot-green { background: #22c55e; }
+
+.hero-line {
+    height: 1rem;
+    background: #f1f5f9;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.hero-line-short {
+    width: 40%;
+    height: 1.5rem;
+    margin-bottom: 2rem;
+    background: #e2e8f0;
+}
+
+.hero-box-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.hero-box {
+    height: 100px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--hero-border);
+    border-radius: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+    .hero-actions {
+        flex-direction: row; /* Buttons side by side */
+        width: auto;
+    }
+    
+    .hero-btn {
+        width: 50%;
+    }
+    .hero-container {
+        grid-template-columns: 1fr 1fr; /* Split layout 50/50 */
+    }
+    
+    .hero-visual {
+        display: block; /* Show visual on desktop */
+    }
+}
+
+.glass-instruct{
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-top: 100px;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+    display: none;
+}
+@media (min-width: 1024px){
+    .instruct{
+        align-items: center;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+}

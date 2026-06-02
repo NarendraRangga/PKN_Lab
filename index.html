@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Layanan Aduan Fasilitas dan Kegiatan Praktikum Laboratorium Informatika">
+    
+    <!-- Title is important for SEO and browser tabs -->
+    <title>Layanan Aduan - Lab Informatika</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/main.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li class="logo">
+                    <a href="index.html">
+                        <img src="assets/Resmi_Logo_UMS_Color_FullText.png" alt="Logo" class="iconums">
+                    </a>
+                </li>
+                <li><a href="#" class="btn-login" id="login-btn">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        
+        <section class="hero-section">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Layanan aduan lab komputer <br> <span class="hero-highlight">Informatika</span></h1>
+                    <p class="hero-description">Untuk asisten lab dan dosen<!--jika ingin dikasih deskripsio--></p>
+                    <div class="hero-actions">
+                        <a href="#" class="hero-btn hero-btn-primary" id="instructBtn">How to use?</a>
+                        <a href="#" class="hero-btn hero-btn-secondary">Contact</a>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-shape hero-shape-1"></div>
+                    <div class="hero-shape hero-shape-2"></div>
+                    
+                    <div class="hero-glass-card">
+                        <div class="hero-header">
+                            <span class="hero-dot hero-dot-red"></span>
+                            <span class="hero-dot hero-dot-yellow"></span>
+                            <span class="hero-dot hero-dot-green"></span>
+                        </div>
+                        <div class="hero-body">
+                            <img src="assets/lab.png" style="max-width: 500px; border-radius: 10px; opacity: 90%;">
+<!--isi untuk gambar lab-->
+
+                            </div>
+                        </div>
+                    </div>
+   
+                </div>
+                <div class="instruct">
+                    <div id="instructGlass" class="glass-instruct">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit voluptatem fugit voluptas distinctio quis totam, excepturi laborum iure harum. Laudantium aspernatur praesentium consequuntur magnam doloremque quia similique quas non illo.
+                    </div>
+            </div>     
+        </div>
+        </section>
+
+        <!-- Login Modal Overlay -->
+        <div id="login-modal" class="modal">
+            <!-- Modal Content Box -->
+            <div class="modal-content">
+                <span class="close-btn">&times;</span><br><br>
+                <div style="font-size: larger; font-weight: bolder;">Masukkan email dan password</div><br>
+                <form action="#" method="POST">
+                    
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" placeholder="@student.ums.ac.id @ums.ac.id" required>
+                    
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    
+                    <button type="submit" class="submit-btn">Masuk</button>
+                </form>
+            </div>
+        </div>
+
+
+
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; <span id="copyright-year"></span>  Laboratorium Informatika. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS: Placed at the bottom for faster page load -->
+    <script src="script/main.js"></script>
+    <script src="#"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> --> 
+</body>
+</html>
