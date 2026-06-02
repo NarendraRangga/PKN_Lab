@@ -27,7 +27,7 @@
             <p>Silahkan isi detail aduan pada form di bawah ini.</p>
         </div>
 
-        <form class="report-form" method="post" enctype="multipart/form-data">
+        <form id="reportForm" class="report-form" method="post" enctype="multipart/form-data">
             <div class="form-grid">
                 
                 <div class="form-group">
@@ -67,8 +67,8 @@
                     <textarea id="Uraian" name="Uraian" placeholder="Jelaskan detail aduan... (contoh: aplikasi komputer ini tidak bisa digunakan)" rows="4" required></textarea>
 
                     <label for="BuktiFoto">Upload Bukti Foto (Opsional)</label>
-                    <input type="file" id="BuktiFoto" name="BuktiFoto" accept="image/png, image/jpeg, image/jpg" capture="environment" class="file-input">
-                    <small class="form-help">Format yang didukung: JPG, JPEG, PNG. Maksimal ukuran file: 2MB.</small>
+                    <input type="file" id="BuktiFoto" name="BuktiFoto" accept="image/png, image/jpeg, image/jpg" capture="environment" class="file-input" disabled>
+                    <small class="form-help">Upload foto sementara dinonaktifkan.</small>
                 </div>
 
             </div>
@@ -76,9 +76,11 @@
             <div class="form-actions">
                 <button type="submit" class="btn-submit">Kirim Laporan</button>
             </div>
+            <p id="formStatus" class="form-status" role="status"></p>
         </form>
 
     </div>
 </main>
+    <script src="../script/user.js"></script>
 </body>
 </html>

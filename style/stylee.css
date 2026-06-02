@@ -161,3 +161,22 @@ textarea{
     background-color: #e2e8f0;
     color: #38438f; /* Darker UMS Blue */
 }
+
+.file-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-status {
+    margin-top: 1rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.form-status.success {
+    color: #16a34a;
+}
+
+.form-status.error {
+    color: #ef4444;
+}

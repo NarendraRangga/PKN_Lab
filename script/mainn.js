@@ -1,100 +1,205 @@
-// 1. Masukkan URL Web App Google Apps Script Anda di sini
-const API_URL = 'URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI';
+const API_URL = "/api/reports";
 
-// 2. Fungsi untuk memuat data dari Google Sheet
-async function muatDataTabel() {
-    const tableBody = document.getElementById("tableBody");
-    
-    // Tampilkan tulisan "Memuat..." saat sedang mengambil data
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Memuat data pengaduan...</td></tr>';
+const tableBody = document.getElementById("tableBody");
+const editModal = document.getElementById("editModal");
+const editIdInput = document.getElementById("editId");
+const editUraianInput = document.getElementById("editUraian");
 
-    try {
-        // Melakukan request GET ke API Google Script
-        const response = await fetch(API_URL);
-        const result = await response.json();
+let cachedReports = new Map();
 
-        // Pastikan status dari Google Script adalah "success"
-        if (result.status === "success") {
-            const dataPengaduan = result.data;
-            
-            // Kosongkan tabel sebelum mengisinya dengan data baru
-            tableBody.innerHTML = "";
-
-            // Jika sheet masih kosong (hanya ada header)
-            if (dataPengaduan.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Belum ada data laporan.</td></tr>';
-                return;
-            }
-
-            // Looping/Ulangi untuk setiap baris data di Sheet
-            dataPengaduan.forEach(item => {
-                
-                // Cek apakah ada link foto. Jika kosong, beri tanda "-"
-                const tautanFoto = (item.Foto && item.Foto !== "") 
-                    ? `<a href="${item.Foto}" class="link-foto" target="_blank">Lihat Foto</a>` 
-                    : '-';
-
-                // Format baris HTML menggunakan data dari Google Sheet
-                // Catatan: Jika nama header kolom Anda menggunakan spasi (Tempat), gunakan kurung siku item['Tempat']
-                const barisBaru = `
-                    <tr>
-                        <td>${item.Tanggal}</td>
-                        <td>${item.Nama}</td>
-                        <td>${item['Tempat'] || item.Tempat}</td>
-                        <td class="td-uraian">${item.Uraian}</td>
-                        <td>${tautanFoto}</td>
-                        <td class="action-buttons">
-                            <button class="btn-edit" onclick="editData('${item.Id}')">Edit</button>
-                            <button class="btn-delete" onclick="hapusData('${item.Id}')">Hapus</button>
-                        </td>
-                    </tr>
-                `;
-                
-                // Tambahkan baris tersebut ke dalam tabel
-                tableBody.innerHTML += barisBaru;
-            });
-            
-        } else {
-            // Jika ada error dari server Google
-            tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444;">Gagal memuat data: ${result.message}</td></tr>`;
-        }
-
-    } catch (error) {
-        // Jika internet terputus atau URL salah
-        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #ef4444;">Terjadi kesalahan koneksi jaringan.</td></tr>';
-        console.error("Error mengambil data: ", error);
-    }
+function setTableMessage(message, isError = false) {
+  tableBody.innerHTML = "";
+  const row = document.createElement("tr");
+  const cell = document.createElement("td");
+  cell.colSpan = 6;
+  cell.style.textAlign = "center";
+  if (isError) {
+    cell.style.color = "#ef4444";
+  }
+  cell.textContent = message;
+  row.appendChild(cell);
+  tableBody.appendChild(row);
 }
 
-// 3. Panggil fungsi ini secara otomatis saat halaman Admin pertama kali dibuka
-document.addEventListener("DOMContentLoaded", muatDataTabel);
+function createCell(text, className) {
+  const cell = document.createElement("td");
+  if (className) {
+    cell.className = className;
+  }
+  cell.textContent = text;
+  return cell;
+}
+
+function renderReports(reports) {
+  cachedReports = new Map(reports.map((item) => [item.id, item]));
+  tableBody.innerHTML = "";
+
+  if (reports.length === 0) {
+    setTableMessage("Belum ada data laporan.");
+    return;
+  }
+
+  reports.forEach((item) => {
+    const row = document.createElement("tr");
+    row.appendChild(createCell(item.tanggal || "-"));
+    row.appendChild(createCell(item.nama || "-"));
+    row.appendChild(createCell(item.laboratorium || "-"));
+    row.appendChild(createCell(item.uraian || "-", "td-uraian"));
+
+    const fotoCell = document.createElement("td");
+    if (item.fotoUrl) {
+      const link = document.createElement("a");
+      link.href = item.fotoUrl;
+      link.className = "link-foto";
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "Lihat Foto";
+      fotoCell.appendChild(link);
+    } else {
+      fotoCell.textContent = "-";
+    }
+    row.appendChild(fotoCell);
+
+    const actionCell = document.createElement("td");
+    actionCell.className = "action-buttons";
+
+    const editBtn = document.createElement("button");
+    editBtn.className = "btn-edit";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => editData(item.id));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "btn-delete";
+    deleteBtn.textContent = "Hapus";
+    deleteBtn.addEventListener("click", () => hapusData(item.id));
+
+    actionCell.appendChild(editBtn);
+    actionCell.appendChild(deleteBtn);
+    row.appendChild(actionCell);
+
+    tableBody.appendChild(row);
+  });
+}
+
+async function muatDataTabel() {
+  setTableMessage("Memuat data pengaduan...");
+
+  try {
+    const response = await fetch(API_URL);
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Gagal memuat data.");
+    }
+    renderReports(result.data || []);
+  } catch (error) {
+    setTableMessage(
+      error.message || "Terjadi kesalahan koneksi jaringan.",
+      true
+    );
+  }
+}
+
+function editData(id) {
+  const report = cachedReports.get(id);
+  if (!report) {
+    return;
+  }
+  editIdInput.value = report.id;
+  editUraianInput.value = report.uraian || "";
+  editModal.style.display = "flex";
+}
+
+function tutupModal() {
+  editModal.style.display = "none";
+}
+
+async function simpanEdit() {
+  const id = editIdInput.value;
+  const uraian = editUraianInput.value.trim();
+
+  if (!id || !uraian) {
+    window.alert("Uraian tidak boleh kosong.");
+    return;
+  }
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, uraian }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Gagal menyimpan perubahan.");
+    }
+    tutupModal();
+    await muatDataTabel();
+  } catch (error) {
+    window.alert(error.message || "Terjadi kesalahan saat menyimpan.");
+  }
+}
+
+async function hapusData(id) {
+  if (!window.confirm("Yakin ingin menghapus laporan ini?")) {
+    return;
+  }
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Gagal menghapus data.");
+    }
+    await muatDataTabel();
+  } catch (error) {
+    window.alert(error.message || "Terjadi kesalahan saat menghapus.");
+  }
+}
 
 function pindahTab(namaTab) {
-    // 1. Sembunyikan semua section
-    document.getElementById('sectionAduan').style.display = 'none';
-    document.getElementById('sectionAkun').style.display = 'none';
-    
-    // 2. Hilangkan class 'active' dari semua tombol tab
-    document.getElementById('tabAduan').classList.remove('active');
-    document.getElementById('tabAkun').classList.remove('active');
-    
-    // 3. Tampilkan section yang dipilih dan beri tanda 'active' pada tombolnya
-    if (namaTab === 'aduan') {
-        document.getElementById('sectionAduan').style.display = 'block';
-        document.getElementById('tabAduan').classList.add('active');
-    } else if (namaTab === 'akun') {
-        document.getElementById('sectionAkun').style.display = 'block';
-        document.getElementById('tabAkun').classList.add('active');
-    }
+  document.getElementById("sectionAduan").style.display = "none";
+  document.getElementById("sectionAkun").style.display = "none";
+  document.getElementById("tabAduan").classList.remove("active");
+  document.getElementById("tabAkun").classList.remove("active");
+
+  if (namaTab === "aduan") {
+    document.getElementById("sectionAduan").style.display = "block";
+    document.getElementById("tabAduan").classList.add("active");
+  } else if (namaTab === "akun") {
+    document.getElementById("sectionAkun").style.display = "block";
+    document.getElementById("tabAkun").classList.add("active");
+  }
 }
 
-// Fungsi Modal Akun (Contoh dasar)
 function bukaModalAkun() {
-    document.getElementById('modalAkunTitle').innerText = "Tambah Akun Baru";
-    document.getElementById('formAkun').reset(); // Kosongkan form
-    document.getElementById('modalAkun').style.display = 'flex';
+  document.getElementById("modalAkunTitle").innerText = "Tambah Akun Baru";
+  document.getElementById("formAkun").reset();
+  document.getElementById("modalAkun").style.display = "flex";
 }
 
 function tutupModalAkun() {
-    document.getElementById('modalAkun').style.display = 'none';
+  document.getElementById("modalAkun").style.display = "none";
 }
+
+function logout() {
+  window.location.href = "../index.html";
+}
+
+document.addEventListener("DOMContentLoaded", muatDataTabel);
+
+window.editData = editData;
+window.hapusData = hapusData;
+window.simpanEdit = simpanEdit;
+window.tutupModal = tutupModal;
+window.pindahTab = pindahTab;
+window.bukaModalAkun = bukaModalAkun;
+window.tutupModalAkun = tutupModalAkun;
+window.logout = logout;
