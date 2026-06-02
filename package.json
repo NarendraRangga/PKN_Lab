@@ -4,7 +4,6 @@
   "private": true,
   "description": "Layanan Aduan Lab Informatika",
   "dependencies": {
-    "googleapis": "^140.0.0",
     "resend": "^3.6.0"
   },
   "engines": {

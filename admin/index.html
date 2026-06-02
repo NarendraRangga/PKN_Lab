@@ -120,6 +120,21 @@
                 </div>
             </div>
         </main>
-        </body>
-    <script src="../script/mainn.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script>
+            const supabaseUrl = 'https://ldkctewkmtdsgheslagm.supabase.co'; 
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxka2N0ZXdrbXRkc2doZXNsYWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODU1ODYsImV4cCI6MjA5NTk2MTU4Nn0.Zs7gamZXZEwd_DZRTpla3P7BvBn70jGPRdCO8BnRPA8'; 
+            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+            async function checkAuth() {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = "../index.html";
+                }
+            }
+            checkAuth();
+            window.supabaseClient = supabase;
+        </script>
+        <script src="../script/mainn.js"></script>
+    </body>
 </html>

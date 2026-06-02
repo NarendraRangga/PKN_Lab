@@ -189,7 +189,10 @@ function tutupModalAkun() {
   document.getElementById("modalAkun").style.display = "none";
 }
 
-function logout() {
+async function logout() {
+  if (window.supabaseClient) {
+    await window.supabaseClient.auth.signOut();
+  }
   window.location.href = "../index.html";
 }
 

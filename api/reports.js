@@ -1,30 +1,4 @@
-const { google } = require("googleapis");
 const { Resend } = require("resend");
-const crypto = require("crypto");
-
-const HEADERS = [
-  "Id",
-  "Tanggal",
-  "Nama",
-  "Laboratorium",
-  "JenisAduan",
-  "Uraian",
-  "FotoUrl",
-  "CreatedAt",
-  "UpdatedAt",
-];
-
-const COLUMN_INDEX = {
-  id: 0,
-  tanggal: 1,
-  nama: 2,
-  laboratorium: 3,
-  jenisAduan: 4,
-  uraian: 5,
-  fotoUrl: 6,
-  createdAt: 7,
-  updatedAt: 8,
-};
 
 function getRequiredEnv(name) {
   const value = process.env[name];
@@ -35,13 +9,8 @@ function getRequiredEnv(name) {
 }
 
 function getConfig() {
-  const clientEmail = getRequiredEnv("GOOGLE_SHEETS_CLIENT_EMAIL");
-  const privateKey = getRequiredEnv("GOOGLE_SHEETS_PRIVATE_KEY").replace(
-    /\\n/g,
-    "\n"
-  );
-  const spreadsheetId = getRequiredEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
-  const sheetName = getRequiredEnv("GOOGLE_SHEETS_SHEET_NAME");
+  const sheetyApiUrl = getRequiredEnv("SHEETY_API_URL");
+  const sheetyBearerToken = process.env["SHEETY_BEARER_TOKEN"] || "";
   const resendApiKey = getRequiredEnv("RESEND_API_KEY");
   const emailFrom = getRequiredEnv("REPORT_NOTIFICATION_EMAIL_FROM");
   const emailTo = getRequiredEnv("REPORT_NOTIFICATION_EMAIL_TO")
@@ -53,25 +22,28 @@ function getConfig() {
     throw new Error("REPORT_NOTIFICATION_EMAIL_TO must contain at least 1 email.");
   }
 
+  // Extract sheet name (root property) from Sheety URL (last segment)
+  const urlParts = sheetyApiUrl.replace(/\/$/, "").split("/");
+  const sheetName = urlParts[urlParts.length - 1];
+
   return {
-    clientEmail,
-    privateKey,
-    spreadsheetId,
-    sheetName,
+    sheetyApiUrl,
+    sheetyBearerToken,
     resendApiKey,
     emailFrom,
     emailTo,
+    sheetName
   };
 }
 
-function getSheetsClient(config) {
-  const auth = new google.auth.JWT(
-    config.clientEmail,
-    undefined,
-    config.privateKey,
-    ["https://www.googleapis.com/auth/spreadsheets"]
-  );
-  return google.sheets({ version: "v4", auth });
+function getSheetyHeaders(config) {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  if (config.sheetyBearerToken) {
+    headers["Authorization"] = `Bearer ${config.sheetyBearerToken}`;
+  }
+  return headers;
 }
 
 function parseBody(req) {
@@ -86,74 +58,6 @@ function parseBody(req) {
     }
   }
   return req.body;
-}
-
-async function ensureHeaderRow(sheets, spreadsheetId, sheetName) {
-  const headerRange = `${sheetName}!A1:I1`;
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: headerRange,
-  });
-  const rows = response.data.values || [];
-  if (rows.length === 0 || rows[0].length === 0) {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      range: headerRange,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [HEADERS],
-      },
-    });
-    return;
-  }
-
-  const existingHeader = rows[0];
-  const headerMatches = HEADERS.every(
-    (header, index) => existingHeader[index] === header
-  );
-  if (!headerMatches) {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      range: headerRange,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [HEADERS],
-      },
-    });
-  }
-}
-
-async function getSheetRows(sheets, spreadsheetId, sheetName) {
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${sheetName}!A1:I`,
-  });
-  return response.data.values || [];
-}
-
-function mapRowToReport(row) {
-  return {
-    id: row[COLUMN_INDEX.id] || "",
-    tanggal: row[COLUMN_INDEX.tanggal] || "",
-    nama: row[COLUMN_INDEX.nama] || "",
-    laboratorium: row[COLUMN_INDEX.laboratorium] || "",
-    jenisAduan: row[COLUMN_INDEX.jenisAduan] || "",
-    uraian: row[COLUMN_INDEX.uraian] || "",
-    fotoUrl: row[COLUMN_INDEX.fotoUrl] || "",
-    createdAt: row[COLUMN_INDEX.createdAt] || "",
-    updatedAt: row[COLUMN_INDEX.updatedAt] || "",
-  };
-}
-
-async function findSheetId(sheets, spreadsheetId, sheetName) {
-  const response = await sheets.spreadsheets.get({ spreadsheetId });
-  const sheet = response.data.sheets.find(
-    (item) => item.properties.title === sheetName
-  );
-  if (!sheet) {
-    throw new Error(`Sheet "${sheetName}" not found in spreadsheet.`);
-  }
-  return sheet.properties.sheetId;
 }
 
 async function sendNotificationEmail(config, report) {
@@ -176,7 +80,17 @@ async function sendNotificationEmail(config, report) {
   });
 }
 
+function getSheetyRootKey(sheetName) {
+  // Sheety requires the root JSON property to be the singular name of the endpoint
+  let singularName = sheetName;
+  if (singularName.endsWith('s')) {
+     singularName = singularName.slice(0, -1);
+  }
+  return singularName;
+}
+
 module.exports = async (req, res) => {
+  // CORS Headers for preflight
   if (req.method === "OPTIONS") {
     res.status(204).end();
     return;
@@ -184,20 +98,26 @@ module.exports = async (req, res) => {
 
   try {
     const config = getConfig();
-    const sheets = getSheetsClient(config);
-    await ensureHeaderRow(sheets, config.spreadsheetId, config.sheetName);
 
+    // =====================================
+    // GET (Read Reports)
+    // =====================================
     if (req.method === "GET") {
-      const rows = await getSheetRows(
-        sheets,
-        config.spreadsheetId,
-        config.sheetName
-      );
-      const reports = rows.slice(1).map(mapRowToReport);
+      const response = await fetch(config.sheetyApiUrl, {
+        headers: getSheetyHeaders(config),
+      });
+      if (!response.ok) throw new Error("Failed to fetch from Sheety.");
+      
+      const data = await response.json();
+      const reports = data[config.sheetName] || Object.values(data)[0] || [];
+      
       res.status(200).json({ status: "success", data: reports });
       return;
     }
 
+    // =====================================
+    // POST (Create Report)
+    // =====================================
     if (req.method === "POST") {
       const body = parseBody(req);
       const nama = String(body.nama || "").trim();
@@ -215,8 +135,7 @@ module.exports = async (req, res) => {
       }
 
       const now = new Date().toISOString();
-      const report = {
-        id: crypto.randomUUID(),
+      const reportData = {
         tanggal,
         nama,
         laboratorium,
@@ -227,135 +146,84 @@ module.exports = async (req, res) => {
         updatedAt: now,
       };
 
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: config.spreadsheetId,
-        range: `${config.sheetName}!A1`,
-        valueInputOption: "RAW",
-        insertDataOption: "INSERT_ROWS",
-        requestBody: {
-          values: [
-            [
-              report.id,
-              report.tanggal,
-              report.nama,
-              report.laboratorium,
-              report.jenisAduan,
-              report.uraian,
-              report.fotoUrl,
-              report.createdAt,
-              report.updatedAt,
-            ],
-          ],
-        },
+      const sheetyPayload = {};
+      sheetyPayload[getSheetyRootKey(config.sheetName)] = reportData;
+
+      const response = await fetch(config.sheetyApiUrl, {
+        method: "POST",
+        headers: getSheetyHeaders(config),
+        body: JSON.stringify(sheetyPayload),
       });
 
-      await sendNotificationEmail(config, report);
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Failed to save to Sheety: ${errText}`);
+      }
+      
+      const responseData = await response.json();
+      const savedReport = responseData[getSheetyRootKey(config.sheetName)] || Object.values(responseData)[0] || reportData;
 
-      res.status(201).json({ status: "success", data: report });
+      // Send email notification after successful save
+      await sendNotificationEmail(config, savedReport);
+
+      res.status(201).json({ status: "success", data: savedReport });
       return;
     }
 
+    // =====================================
+    // PUT (Update Report)
+    // =====================================
     if (req.method === "PUT") {
       const body = parseBody(req);
-      const id = String(body.id || "").trim();
+      const id = body.id;
+      
       if (!id) {
         res.status(400).json({ status: "error", message: "ID wajib diisi." });
         return;
       }
 
-      const rows = await getSheetRows(
-        sheets,
-        config.spreadsheetId,
-        config.sheetName
-      );
-      const rowIndex = rows.findIndex(
-        (row, index) => index > 0 && row[COLUMN_INDEX.id] === id
-      );
-      if (rowIndex === -1) {
-        res.status(404).json({ status: "error", message: "Data tidak ditemukan." });
-        return;
-      }
+      const updateData = {};
+      if (body.tanggal !== undefined) updateData.tanggal = String(body.tanggal || "").trim();
+      if (body.nama !== undefined) updateData.nama = String(body.nama || "").trim();
+      if (body.laboratorium !== undefined) updateData.laboratorium = String(body.laboratorium || "").trim();
+      if (body.jenisAduan !== undefined) updateData.jenisAduan = String(body.jenisAduan || "").trim();
+      if (body.uraian !== undefined) updateData.uraian = String(body.uraian || "").trim();
+      
+      updateData.updatedAt = new Date().toISOString();
 
-      const existingRow = rows[rowIndex] || [];
-      const updatedRow = HEADERS.map(
-        (_, index) => existingRow[index] || ""
-      );
+      const sheetyPayload = {};
+      sheetyPayload[getSheetyRootKey(config.sheetName)] = updateData;
 
-      if (body.tanggal !== undefined) {
-        updatedRow[COLUMN_INDEX.tanggal] = String(body.tanggal || "").trim();
-      }
-      if (body.nama !== undefined) {
-        updatedRow[COLUMN_INDEX.nama] = String(body.nama || "").trim();
-      }
-      if (body.laboratorium !== undefined) {
-        updatedRow[COLUMN_INDEX.laboratorium] = String(body.laboratorium || "").trim();
-      }
-      if (body.jenisAduan !== undefined) {
-        updatedRow[COLUMN_INDEX.jenisAduan] = String(body.jenisAduan || "").trim();
-      }
-      if (body.uraian !== undefined) {
-        updatedRow[COLUMN_INDEX.uraian] = String(body.uraian || "").trim();
-      }
-
-      updatedRow[COLUMN_INDEX.updatedAt] = new Date().toISOString();
-
-      const rowNumber = rowIndex + 1;
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: config.spreadsheetId,
-        range: `${config.sheetName}!A${rowNumber}:I${rowNumber}`,
-        valueInputOption: "RAW",
-        requestBody: {
-          values: [updatedRow],
-        },
+      const response = await fetch(`${config.sheetyApiUrl}/${id}`, {
+        method: "PUT",
+        headers: getSheetyHeaders(config),
+        body: JSON.stringify(sheetyPayload),
       });
+
+      if (!response.ok) throw new Error("Failed to update in Sheety.");
 
       res.status(200).json({ status: "success" });
       return;
     }
 
+    // =====================================
+    // DELETE (Remove Report)
+    // =====================================
     if (req.method === "DELETE") {
       const body = parseBody(req);
-      const id = String(body.id || req.query.id || "").trim();
+      const id = body.id || req.query.id;
+      
       if (!id) {
         res.status(400).json({ status: "error", message: "ID wajib diisi." });
         return;
       }
 
-      const rows = await getSheetRows(
-        sheets,
-        config.spreadsheetId,
-        config.sheetName
-      );
-      const rowIndex = rows.findIndex(
-        (row, index) => index > 0 && row[COLUMN_INDEX.id] === id
-      );
-      if (rowIndex === -1) {
-        res.status(404).json({ status: "error", message: "Data tidak ditemukan." });
-        return;
-      }
-
-      const sheetId = await findSheetId(
-        sheets,
-        config.spreadsheetId,
-        config.sheetName
-      );
-      await sheets.spreadsheets.batchUpdate({
-        spreadsheetId: config.spreadsheetId,
-        requestBody: {
-          requests: [
-            {
-              deleteDimension: {
-                range: {
-                  sheetId,
-                  dimension: "ROWS",
-                  startIndex: rowIndex,
-                  endIndex: rowIndex + 1,
-                },
-              },
-            },
-          ],
-        },
+      const response = await fetch(`${config.sheetyApiUrl}/${id}`, {
+        method: "DELETE",
+        headers: getSheetyHeaders(config),
       });
+
+      if (!response.ok) throw new Error("Failed to delete in Sheety.");
 
       res.status(200).json({ status: "success" });
       return;
@@ -363,6 +231,7 @@ module.exports = async (req, res) => {
 
     res.status(405).json({ status: "error", message: "Method not allowed." });
   } catch (error) {
+    console.error("API Error:", error);
     res.status(500).json({
       status: "error",
       message: error.message || "Terjadi kesalahan server.",
