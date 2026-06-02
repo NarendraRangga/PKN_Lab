@@ -5,12 +5,12 @@ function getRequiredEnv(name) {
   if (!value) {
     throw new Error(`Missing ${name} environment variable.`);
   }
-  return value;
+  return value.trim();
 }
 
 function getConfig() {
   const sheetyApiUrl = getRequiredEnv("SHEETY_API_URL");
-  const sheetyBearerToken = process.env["SHEETY_BEARER_TOKEN"] || "";
+  const sheetyBearerToken = (process.env["SHEETY_BEARER_TOKEN"] || "").trim();
   const resendApiKey = getRequiredEnv("RESEND_API_KEY");
   const emailFrom = getRequiredEnv("REPORT_NOTIFICATION_EMAIL_FROM");
   const emailTo = getRequiredEnv("REPORT_NOTIFICATION_EMAIL_TO")
