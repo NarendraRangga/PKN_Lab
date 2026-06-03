@@ -65,6 +65,7 @@ async function sendNotificationEmail(config, report) {
   const subject = "Aduan Baru Masuk";
   const text = [
     "Ada aduan baru yang masuk:",
+    `ID: ${report.id}`,
     `Nama: ${report.nama}`,
     `Tempat/Laboratorium: ${report.tempat || "-"}`,
     `Tanggal: ${report.tanggal}`,
@@ -135,7 +136,10 @@ module.exports = async (req, res) => {
       }
 
       const now = new Date().toISOString();
+      const generatedId = "REP-" + Date.now();
+      
       const reportData = {
+        id: generatedId,
         tanggal,
         nama,
         tempat,
