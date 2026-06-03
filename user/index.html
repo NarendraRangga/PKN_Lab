@@ -67,8 +67,8 @@
                     <textarea id="Uraian" name="Uraian" placeholder="Jelaskan detail aduan... (contoh: aplikasi komputer ini tidak bisa digunakan)" rows="4" required></textarea>
 
                     <label for="BuktiFoto">Upload Bukti Foto (Opsional)</label>
-                    <input type="file" id="BuktiFoto" name="BuktiFoto" accept="image/png, image/jpeg, image/jpg" capture="environment" class="file-input" disabled>
-                    <small class="form-help">Upload foto sementara dinonaktifkan.</small>
+                    <input type="file" id="BuktiFoto" name="BuktiFoto" accept="image/png, image/jpeg, image/jpg" capture="environment" class="file-input">
+                    <small class="form-help">Pilih foto jika ada bukti fisik.</small>
                 </div>
 
             </div>
@@ -81,6 +81,12 @@
 
     </div>
 </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://ldkctewkmtdsgheslagm.supabase.co'; 
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxka2N0ZXdrbXRkc2doZXNsYWdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODU1ODYsImV4cCI6MjA5NTk2MTU4Nn0.Zs7gamZXZEwd_DZRTpla3P7BvBn70jGPRdCO8BnRPA8'; 
+        window.supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
     <script src="../script/user.js"></script>
 </body>
 </html>

@@ -71,6 +71,7 @@ async function sendNotificationEmail(config, report) {
     `Tanggal: ${report.tanggal}`,
     `Jenis Aduan: ${report.jenisAduan}`,
     `Uraian: ${report.uraian}`,
+    `Bukti Foto: ${report.fotoUrl || "-"}`,
   ].join("\n");
 
   await resend.emails.send({
@@ -126,6 +127,7 @@ module.exports = async (req, res) => {
       const tanggal = String(body.tanggal || "").trim();
       const jenisAduan = String(body.jenisAduan || "").trim();
       const uraian = String(body.uraian || "").trim();
+      const fotoUrl = String(body.fotoUrl || "").trim();
 
       if (!nama || !tempat || !tanggal || !jenisAduan || !uraian) {
         res.status(400).json({
@@ -145,7 +147,7 @@ module.exports = async (req, res) => {
         tempat,
         jenisAduan,
         uraian,
-        fotoUrl: "",
+        fotoUrl: fotoUrl,
         createdAt: now,
         updatedAt: now,
       };

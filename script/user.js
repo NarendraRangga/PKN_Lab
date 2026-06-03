@@ -15,6 +15,31 @@ function setStatus(message, type) {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const fileInput = document.getElementById("BuktiFoto");
+  let fotoUrl = "";
+
+  if (fileInput && fileInput.files.length > 0) {
+    setStatus("Mengupload foto...", "");
+    const file = fileInput.files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+    
+    const { data, error } = await window.supabaseClient.storage
+      .from('bukti')
+      .upload(fileName, file);
+      
+    if (error) {
+      setStatus("Gagal mengupload foto: " + error.message, "error");
+      return;
+    }
+    
+    const { data: publicUrlData } = window.supabaseClient.storage
+      .from('bukti')
+      .getPublicUrl(fileName);
+      
+    fotoUrl = publicUrlData.publicUrl;
+  }
+
   setStatus("Mengirim laporan...", "");
 
   const payload = {
@@ -23,6 +48,7 @@ form.addEventListener("submit", async (event) => {
     tanggal: document.getElementById("DateTime").value,
     jenisAduan: document.getElementById("ReportType").value.trim(),
     uraian: document.getElementById("Uraian").value.trim(),
+    fotoUrl: fotoUrl,
   };
 
   try {
