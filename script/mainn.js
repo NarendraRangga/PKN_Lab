@@ -43,7 +43,7 @@ function renderReports(reports) {
     const row = document.createElement("tr");
     row.appendChild(createCell(item.tanggal || "-"));
     row.appendChild(createCell(item.nama || "-"));
-    row.appendChild(createCell(item.laboratorium || "-"));
+    row.appendChild(createCell(item.tempat || "-"));
     row.appendChild(createCell(item.uraian || "-", "td-uraian"));
 
     const fotoCell = document.createElement("td");

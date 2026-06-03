@@ -66,7 +66,7 @@ async function sendNotificationEmail(config, report) {
   const text = [
     "Ada aduan baru yang masuk:",
     `Nama: ${report.nama}`,
-    `Laboratorium: ${report.laboratorium}`,
+    `Tempat/Laboratorium: ${report.tempat || "-"}`,
     `Tanggal: ${report.tanggal}`,
     `Jenis Aduan: ${report.jenisAduan}`,
     `Uraian: ${report.uraian}`,
@@ -121,15 +121,15 @@ module.exports = async (req, res) => {
     if (req.method === "POST") {
       const body = parseBody(req);
       const nama = String(body.nama || "").trim();
-      const laboratorium = String(body.laboratorium || "").trim();
+      const tempat = String(body.tempat || body.laboratorium || "").trim();
       const tanggal = String(body.tanggal || "").trim();
       const jenisAduan = String(body.jenisAduan || "").trim();
       const uraian = String(body.uraian || "").trim();
 
-      if (!nama || !laboratorium || !tanggal || !jenisAduan || !uraian) {
+      if (!nama || !tempat || !tanggal || !jenisAduan || !uraian) {
         res.status(400).json({
           status: "error",
-          message: "Nama, laboratorium, tanggal, jenis aduan, dan uraian wajib diisi.",
+          message: "Nama, tempat, tanggal, jenis aduan, dan uraian wajib diisi.",
         });
         return;
       }
@@ -138,7 +138,7 @@ module.exports = async (req, res) => {
       const reportData = {
         tanggal,
         nama,
-        laboratorium,
+        tempat,
         jenisAduan,
         uraian,
         fotoUrl: "",
@@ -185,7 +185,7 @@ module.exports = async (req, res) => {
       const updateData = {};
       if (body.tanggal !== undefined) updateData.tanggal = String(body.tanggal || "").trim();
       if (body.nama !== undefined) updateData.nama = String(body.nama || "").trim();
-      if (body.laboratorium !== undefined) updateData.laboratorium = String(body.laboratorium || "").trim();
+      if (body.tempat !== undefined || body.laboratorium !== undefined) updateData.tempat = String(body.tempat || body.laboratorium || "").trim();
       if (body.jenisAduan !== undefined) updateData.jenisAduan = String(body.jenisAduan || "").trim();
       if (body.uraian !== undefined) updateData.uraian = String(body.uraian || "").trim();
       

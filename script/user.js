@@ -19,7 +19,7 @@ form.addEventListener("submit", async (event) => {
 
   const payload = {
     nama: document.getElementById("Name").value.trim(),
-    laboratorium: document.getElementById("LabFki").value.trim(),
+    tempat: document.getElementById("LabFki").value.trim(),
     tanggal: document.getElementById("DateTime").value,
     jenisAduan: document.getElementById("ReportType").value.trim(),
     uraian: document.getElementById("Uraian").value.trim(),
