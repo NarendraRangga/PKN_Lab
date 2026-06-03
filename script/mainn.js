@@ -47,9 +47,10 @@ function renderReports(reports) {
     row.appendChild(createCell(item.uraian || "-", "td-uraian"));
 
     const fotoCell = document.createElement("td");
-    if (item.fotoUrl) {
+    const actualFotoUrl = item.fotoUrl || item.foto;
+    if (actualFotoUrl) {
       const link = document.createElement("a");
-      link.href = item.fotoUrl;
+      link.href = actualFotoUrl;
       link.className = "link-foto";
       link.target = "_blank";
       link.rel = "noopener";

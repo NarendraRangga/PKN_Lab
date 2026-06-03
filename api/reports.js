@@ -147,7 +147,7 @@ module.exports = async (req, res) => {
         tempat,
         jenisAduan,
         uraian,
-        fotoUrl: fotoUrl,
+        foto: fotoUrl,
         createdAt: now,
         updatedAt: now,
       };
