@@ -95,10 +95,9 @@
 }
 
 .td-uraian {
-    max-width: 250px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Memotong teks panjang dengan "..." */
+    max-width: 300px;
+    /* Removed white-space: nowrap and overflow: hidden to allow text wrapping */
+    word-wrap: break-word;
 }
 
 .link-foto {
