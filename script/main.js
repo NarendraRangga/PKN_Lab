@@ -33,7 +33,7 @@ const instructCard = document.getElementById("instructGlass");
 
 instructbtn.addEventListener("click", function(event) {
     event.preventDefault(); // Stops the link from jumping to the top of the page
-    instructCard.style.display = "flex"; // Changes from 'none' to 'flex' to show it
+    instructCard.style.display = "block"; // Changes from 'none' to 'block' to show it
     instructCard.scrollIntoView({
         behavior : "smooth"
     });
