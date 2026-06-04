@@ -16,11 +16,13 @@
 
 body {
     min-height: 100vh;
-    /* background-image: url("../assets/bg.jpg"); Uncomment and add real path */
-    background-color: #f4f7f6; /* Good fallback if image doesn't load */
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover; /* Ensures background image covers the whole screen */
+    background-color: #f8fafc;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(228, 100%, 74%, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(189, 100%, 56%, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(240, 100%, 70%, 0.15) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(343, 100%, 76%, 0.12) 0px, transparent 50%);
+    background-attachment: fixed;
     font-family: var(--primary-font);
     color: var(--text-color);
 }
