@@ -67,11 +67,13 @@ async function sendNotificationEmail(config, report) {
     "Ada aduan baru yang masuk:",
     `ID: ${report.id}`,
     `Nama: ${report.nama}`,
+    `Status Pelapor: ${report.statusPelapor || "-"}`,
+    `Nomor Identitas (NIM/NIK): ${report.nomorIdentitas || "-"}`,
     `Tempat/Laboratorium: ${report.tempat || "-"}`,
     `Tanggal: ${report.tanggal}`,
     `Jenis Aduan: ${report.jenisAduan}`,
     `Uraian: ${report.uraian}`,
-    `Bukti Foto: ${report.fotoUrl || "-"}`,
+    `Bukti Foto: ${report.foto || "-"}`,
   ].join("\n");
 
   await resend.emails.send({
@@ -123,16 +125,18 @@ module.exports = async (req, res) => {
     if (req.method === "POST") {
       const body = parseBody(req);
       const nama = String(body.nama || "").trim();
+      const statusPelapor = String(body.statusPelapor || "").trim();
+      const nomorIdentitas = String(body.nomorIdentitas || "").trim();
       const tempat = String(body.tempat || body.laboratorium || "").trim();
       const tanggal = String(body.tanggal || "").trim();
       const jenisAduan = String(body.jenisAduan || "").trim();
       const uraian = String(body.uraian || "").trim();
       const fotoUrl = String(body.fotoUrl || "").trim();
 
-      if (!nama || !tempat || !tanggal || !jenisAduan || !uraian) {
+      if (!nama || !statusPelapor || !nomorIdentitas || !tempat || !tanggal || !jenisAduan || !uraian) {
         res.status(400).json({
           status: "error",
-          message: "Nama, tempat, tanggal, jenis aduan, dan uraian wajib diisi.",
+          message: "Nama, Status Pelapor, NIM/NIK, tempat, tanggal, jenis aduan, dan uraian wajib diisi.",
         });
         return;
       }
@@ -144,6 +148,8 @@ module.exports = async (req, res) => {
         id: generatedId,
         tanggal,
         nama,
+        statusPelapor,
+        nomorIdentitas,
         tempat,
         jenisAduan,
         uraian,

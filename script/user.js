@@ -44,6 +44,8 @@ form.addEventListener("submit", async (event) => {
 
   const payload = {
     nama: document.getElementById("Name").value.trim(),
+    statusPelapor: document.getElementById("StatusPelapor").value.trim(),
+    nomorIdentitas: document.getElementById("NomorIdentitas").value.trim(),
     tempat: document.getElementById("LabFki").value.trim(),
     tanggal: document.getElementById("DateTime").value,
     jenisAduan: document.getElementById("ReportType").value.trim(),

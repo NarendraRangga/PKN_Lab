@@ -11,7 +11,7 @@ function setTableMessage(message, isError = false) {
   tableBody.innerHTML = "";
   const row = document.createElement("tr");
   const cell = document.createElement("td");
-  cell.colSpan = 6;
+  cell.colSpan = 8;
   cell.style.textAlign = "center";
   if (isError) {
     cell.style.color = "#ef4444";
@@ -43,6 +43,8 @@ function renderReports(reports) {
     const row = document.createElement("tr");
     row.appendChild(createCell(item.tanggal || "-"));
     row.appendChild(createCell(item.nama || "-"));
+    row.appendChild(createCell(item.statusPelapor || "-"));
+    row.appendChild(createCell(item.nomorIdentitas || "-"));
     row.appendChild(createCell(item.tempat || "-"));
     row.appendChild(createCell(item.uraian || "-", "td-uraian"));
 
