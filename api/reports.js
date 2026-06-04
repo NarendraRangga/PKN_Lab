@@ -197,6 +197,8 @@ module.exports = async (req, res) => {
       const updateData = {};
       if (body.tanggal !== undefined) updateData.tanggal = String(body.tanggal || "").trim();
       if (body.nama !== undefined) updateData.nama = String(body.nama || "").trim();
+      if (body.statusPelapor !== undefined) updateData.statusPelapor = String(body.statusPelapor || "").trim();
+      if (body.nomorIdentitas !== undefined) updateData.nomorIdentitas = String(body.nomorIdentitas || "").trim();
       if (body.tempat !== undefined || body.laboratorium !== undefined) updateData.tempat = String(body.tempat || body.laboratorium || "").trim();
       if (body.jenisAduan !== undefined) updateData.jenisAduan = String(body.jenisAduan || "").trim();
       if (body.uraian !== undefined) updateData.uraian = String(body.uraian || "").trim();

@@ -108,6 +108,19 @@ function editData(id) {
     return;
   }
   editIdInput.value = report.id;
+  document.getElementById("editTanggal").value = report.tanggal || "";
+  document.getElementById("editNama").value = report.nama || "";
+  document.getElementById("editStatus").value = report.statusPelapor || "Mahasiswa";
+  document.getElementById("editIdentitas").value = report.nomorIdentitas || "";
+  document.getElementById("editTempat").value = report.tempat || "";
+  
+  // Set Jenis Aduan (Try to match exactly, or fallback to first option)
+  const jenisSelect = document.getElementById("editJenis");
+  if (report.jenisAduan) {
+      let matched = Array.from(jenisSelect.options).find(opt => opt.value === report.jenisAduan || opt.text === report.jenisAduan);
+      if (matched) jenisSelect.value = matched.value;
+  }
+  
   editUraianInput.value = report.uraian || "";
   editModal.style.display = "flex";
 }
@@ -118,20 +131,27 @@ function tutupModal() {
 
 async function simpanEdit() {
   const id = editIdInput.value;
+  const tanggal = document.getElementById("editTanggal").value;
+  const nama = document.getElementById("editNama").value.trim();
+  const statusPelapor = document.getElementById("editStatus").value;
+  const nomorIdentitas = document.getElementById("editIdentitas").value.trim();
+  const tempat = document.getElementById("editTempat").value;
+  const jenisAduan = document.getElementById("editJenis").value;
   const uraian = editUraianInput.value.trim();
 
-  if (!id || !uraian) {
-    window.alert("Uraian tidak boleh kosong.");
+  if (!id || !uraian || !nama || !nomorIdentitas) {
+    window.alert("Beberapa kolom wajib (seperti Nama, Identitas, Uraian) tidak boleh kosong.");
     return;
   }
 
   try {
+    const payload = { id, tanggal, nama, statusPelapor, nomorIdentitas, tempat, jenisAduan, uraian };
     const response = await fetch(API_URL, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, uraian }),
+      body: JSON.stringify(payload),
     });
     const result = await response.json();
     if (!response.ok) {

@@ -85,12 +85,59 @@
             </div>
 
         <div id="editModal" class="modal-overlay" style="display: none;">
-                <div class="modal-card">
-                    <h3>Edit Uraian Aduan</h3>
-                    <form id="editForm">
+                <div class="modal-card" style="max-width: 600px;">
+                    <h3>Detail / Edit Laporan</h3>
+                    <form id="editForm" style="text-align: left;">
                         <input type="hidden" id="editId">
+                        
+                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div class="form-group">
+                                <label for="editTanggal">Tanggal</label>
+                                <input type="date" id="editTanggal" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="editNama">Nama Lengkap</label>
+                                <input type="text" id="editNama" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="editStatus">Status Pelapor</label>
+                                <select id="editStatus" class="admin-input">
+                                    <option value="Mahasiswa">Mahasiswa</option>
+                                    <option value="Asisten">Asisten</option>
+                                    <option value="Dosen">Dosen</option>
+                                    <option value="Petugas">Petugas Laboratorium</option>
+                                    <option value="Umum">Umum / Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editIdentitas">NIM / NIK</label>
+                                <input type="text" id="editIdentitas" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="editTempat">Laboratorium</label>
+                                <select id="editTempat" class="admin-input">
+                                    <option value="SistemCerdas">Sistem Cerdas</option>
+                                    <option value="KomputerFKI">Komputer FKI</option>
+                                    <option value="SistemInformasi">Sistem Informasi</option>
+                                    <option value="RekayasaPerangkatLunak">Rekayasa Perangkat Lunak</option>
+                                    <option value="JaringanKomputer">Jaringan Komputer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editJenis">Jenis Aduan</label>
+                                <select id="editJenis" class="admin-input">
+                                    <option value="Perangkat Keras">Perangkat Keras (Hardware)</option>
+                                    <option value="Perangkat Lunak">Perangkat Lunak (Software)</option>
+                                    <option value="Jaringan">Jaringan</option>
+                                    <option value="Fasilitas Ruangan">Fasilitas Ruangan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="form-group full-width">
-                            <textarea id="editUraian" rows="4" class="admin-textarea"></textarea>
+                            <label for="editUraian">Uraian / Detail Keluhan</label>
+                            <textarea id="editUraian" rows="5" class="admin-textarea"></textarea>
                         </div>
                         <div class="form-actions admin-modal-actions">
                             <button type="button" class="btn-secondary" onclick="tutupModal()">Batal</button>
