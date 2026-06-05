@@ -12,7 +12,7 @@ function setTableMessage(message, isError = false) {
   tableBody.innerHTML = "";
   const row = document.createElement("tr");
   const cell = document.createElement("td");
-  cell.colSpan = 10;
+  cell.colSpan = 11;
   cell.style.textAlign = "center";
   if (isError) {
     cell.style.color = "#ef4444";
@@ -47,6 +47,7 @@ function renderReports(reports) {
     row.appendChild(createCell(item.statusPelapor || "-"));
     row.appendChild(createCell(item.nomorIdentitas || "-"));
     row.appendChild(createCell(item.tempat || "-"));
+    row.appendChild(createCell(item.jenisAduan || "-"));
     row.appendChild(createCell(item.uraian || "-", "td-uraian"));
 
     const fotoCell = document.createElement("td");
@@ -137,6 +138,13 @@ function applyFilters() {
     filteredData = filteredData.filter(item => {
       const status = item.keterangan || "Belum Diproses";
       return status === filterStatus;
+    });
+  }
+
+  const filterJenis = document.getElementById("filterJenisAduan")?.value;
+  if (filterJenis) {
+    filteredData = filteredData.filter(item => {
+      return item.jenisAduan === filterJenis;
     });
   }
 
@@ -404,7 +412,16 @@ async function simpanAkun() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", muatDataTabel);
+document.addEventListener("DOMContentLoaded", () => {
+    // Set filterBulan to current month by default
+    const filterBulanEl = document.getElementById("filterBulan");
+    if (filterBulanEl && !filterBulanEl.value) {
+        const currentMonth = new Date().getMonth() + 1; // 1-12
+        const monthStr = currentMonth.toString().padStart(2, '0');
+        filterBulanEl.value = monthStr;
+    }
+    muatDataTabel();
+});
 
 window.editData = editData;
 window.hapusData = hapusData;

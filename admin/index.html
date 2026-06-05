@@ -67,6 +67,14 @@
                         <option value="Sedang Diproses">Sedang Diproses</option>
                         <option value="Sudah Dikerjakan">Sudah Dikerjakan</option>
                     </select>
+                    <select id="filterJenisAduan" class="admin-input" style="max-width: 200px;" onchange="applyFilters()">
+                        <option value="">Semua Jenis</option>
+                        <option value="Perangkat Keras">Perangkat Keras (Hardware)</option>
+                        <option value="Perangkat Lunak">Perangkat Lunak (Software)</option>
+                        <option value="Jaringan">Jaringan</option>
+                        <option value="Fasilitas Ruangan">Fasilitas Ruangan</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
                 </div>
                 <div class="admin-card">
                     <div class="table-responsive">
@@ -78,6 +86,7 @@
                                     <th>Status</th>
                                     <th>Identitas</th>
                                     <th>Laboratorium</th>
+                                    <th>Jenis Aduan</th>
                                     <th>Uraian</th>
                                     <th>Bukti Foto</th>
                                     <th>Keterangan</th>
