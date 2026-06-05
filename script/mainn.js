@@ -6,6 +6,7 @@ const editIdInput = document.getElementById("editId");
 const editUraianInput = document.getElementById("editUraian");
 
 let cachedReports = new Map();
+let allReportsData = [];
 
 function setTableMessage(message, isError = false) {
   tableBody.innerHTML = "";
@@ -105,13 +106,41 @@ async function muatDataTabel() {
     if (!response.ok) {
       throw new Error(result.message || "Gagal memuat data.");
     }
-    renderReports(result.data || []);
+    allReportsData = result.data || [];
+    applyFilters();
   } catch (error) {
     setTableMessage(
       error.message || "Terjadi kesalahan koneksi jaringan.",
       true
     );
   }
+}
+
+function applyFilters() {
+  const filterBulan = document.getElementById("filterBulan")?.value;
+  const filterStatus = document.getElementById("filterStatusPengerjaan")?.value;
+
+  let filteredData = allReportsData;
+
+  if (filterBulan) {
+    filteredData = filteredData.filter(item => {
+      if (!item.tanggal) return false;
+      const parts = item.tanggal.split("-");
+      if (parts.length >= 2) {
+        return parts[1] === filterBulan;
+      }
+      return false;
+    });
+  }
+
+  if (filterStatus) {
+    filteredData = filteredData.filter(item => {
+      const status = item.keterangan || "Belum Diproses";
+      return status === filterStatus;
+    });
+  }
+
+  renderReports(filteredData);
 }
 
 function editData(id) {

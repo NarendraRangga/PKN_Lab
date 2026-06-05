@@ -45,6 +45,29 @@
                         Buka Spreadsheet
                     </a>
                 </div>
+                <div class="admin-filters" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <select id="filterBulan" class="admin-input" style="max-width: 200px;" onchange="applyFilters()">
+                        <option value="">Semua Bulan</option>
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                    <select id="filterStatusPengerjaan" class="admin-input" style="max-width: 200px;" onchange="applyFilters()">
+                        <option value="">Semua Status</option>
+                        <option value="Belum Diproses">Belum Diproses</option>
+                        <option value="Sedang Diproses">Sedang Diproses</option>
+                        <option value="Sudah Dikerjakan">Sudah Dikerjakan</option>
+                    </select>
+                </div>
                 <div class="admin-card">
                     <div class="table-responsive">
                         <table class="admin-table">
