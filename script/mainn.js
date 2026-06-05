@@ -1,13 +1,21 @@
-const API_URL = "/api/reports";
+// =========================================================
+// INISIALISASI VARIABEL & ELEMEN HTML
+// =========================================================
+const API_URL = "/api/reports"; // Alamat backend (API) untuk mengambil dan memanipulasi data
 
 const tableBody = document.getElementById("tableBody");
 const editModal = document.getElementById("editModal");
 const editIdInput = document.getElementById("editId");
 const editUraianInput = document.getElementById("editUraian");
 
-let cachedReports = new Map();
-let allReportsData = [];
+let cachedReports = new Map(); // Menyimpan data laporan sementara berdasarkan ID untuk memudahkan saat fitur "Edit" ditekan
+let allReportsData = []; // Menyimpan semua data asli dari server sebelum dilakukan filtering
 
+// =========================================================
+// FUNGSI UNTUK MERENDER ISI TABEL (HTML)
+// =========================================================
+
+// Fungsi untuk menampilkan pesan kosong atau pesan error di dalam tabel
 function setTableMessage(message, isError = false) {
   tableBody.innerHTML = "";
   const row = document.createElement("tr");
@@ -22,6 +30,7 @@ function setTableMessage(message, isError = false) {
   tableBody.appendChild(row);
 }
 
+// Fungsi pembantu (helper) untuk membuat elemen <td> (kolom tabel) dengan cepat
 function createCell(text, className) {
   const cell = document.createElement("td");
   if (className) {
@@ -31,6 +40,7 @@ function createCell(text, className) {
   return cell;
 }
 
+// Fungsi utama untuk mencetak (me-render) baris-baris data ke dalam tabel HTML
 function renderReports(reports) {
   cachedReports = new Map(reports.map((item) => [item.id, item]));
   tableBody.innerHTML = "";
@@ -98,6 +108,11 @@ function renderReports(reports) {
   });
 }
 
+// =========================================================
+// FUNGSI PENGAMBILAN DATA (FETCHING) & FILTERING
+// =========================================================
+
+// Mengambil seluruh data laporan dari backend (API)
 async function muatDataTabel() {
   setTableMessage("Memuat data pengaduan...");
 
@@ -117,6 +132,7 @@ async function muatDataTabel() {
   }
 }
 
+// Menerapkan filter (Bulan, Status, Jenis) ke data asli sebelum mencetaknya ke tabel
 function applyFilters() {
   const filterBulan = document.getElementById("filterBulan")?.value;
   const filterStatus = document.getElementById("filterStatusPengerjaan")?.value;
@@ -151,6 +167,11 @@ function applyFilters() {
   renderReports(filteredData);
 }
 
+// =========================================================
+// FUNGSI UNTUK FITUR EDIT & MODAL
+// =========================================================
+
+// Membuka modal edit dan mengisi form dengan data yang sudah ada (berdasarkan ID)
 function editData(id) {
   const report = cachedReports.get(id);
   if (!report) {

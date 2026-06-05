@@ -93,6 +93,9 @@ function getSheetyRootKey(sheetName) {
   return singularName;
 }
 
+// =========================================================
+// ENDPOINT UTAMA API (Menerima Request dari Frontend)
+// =========================================================
 module.exports = async (req, res) => {
   // CORS Headers for preflight
   if (req.method === "OPTIONS") {
@@ -101,10 +104,10 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const config = getConfig();
+    const config = getConfig(); // Mengambil konfigurasi rahasia (Token, API Key, Email)
 
     // =====================================
-    // GET (Read Reports)
+    // GET (Mengambil Semua Laporan)
     // =====================================
     if (req.method === "GET") {
       const response = await fetch(config.sheetyApiUrl, {
@@ -120,10 +123,10 @@ module.exports = async (req, res) => {
     }
 
     // =====================================
-    // POST (Create Report)
+    // POST (Membuat Laporan Baru)
     // =====================================
     if (req.method === "POST") {
-      const body = parseBody(req);
+      const body = parseBody(req); // Membaca data yang dikirim oleh user melalui form html
       const nama = String(body.nama || "").trim();
       const statusPelapor = String(body.statusPelapor || "").trim();
       const nomorIdentitas = String(body.nomorIdentitas || "").trim();
@@ -177,7 +180,7 @@ module.exports = async (req, res) => {
       const responseData = await response.json();
       const savedReport = responseData[getSheetyRootKey(config.sheetName)] || Object.values(responseData)[0] || reportData;
 
-      // Send email notification after successful save
+      // Mengirim Notifikasi Email ke Admin setelah data berhasil disimpan
       await sendNotificationEmail(config, savedReport);
 
       res.status(201).json({ status: "success", data: savedReport });
@@ -185,7 +188,7 @@ module.exports = async (req, res) => {
     }
 
     // =====================================
-    // PUT (Update Report)
+    // PUT (Mengubah/Mengedit Laporan)
     // =====================================
     if (req.method === "PUT") {
       const body = parseBody(req);
@@ -225,7 +228,7 @@ module.exports = async (req, res) => {
     }
 
     // =====================================
-    // DELETE (Remove Report)
+    // DELETE (Menghapus Laporan)
     // =====================================
     if (req.method === "DELETE") {
       const body = parseBody(req);
