@@ -67,6 +67,14 @@ function renderReports(reports) {
     const actionCell = document.createElement("td");
     actionCell.className = "action-buttons";
 
+    if (item.keterangan !== "Sudah Dikerjakan") {
+        const doneBtn = document.createElement("button");
+        doneBtn.className = "btn-done";
+        doneBtn.textContent = "Selesai";
+        doneBtn.addEventListener("click", () => tandaiSelesai(item.id));
+        actionCell.appendChild(doneBtn);
+    }
+
     const editBtn = document.createElement("button");
     editBtn.className = "btn-edit";
     editBtn.textContent = "Edit";
@@ -182,22 +190,55 @@ async function hapusData(id) {
   if (!window.confirm("Yakin ingin menghapus laporan ini?")) {
     return;
   }
-
   try {
+    const payload = { id };
     const response = await fetch(API_URL, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify(payload),
     });
     const result = await response.json();
     if (!response.ok) {
-      throw new Error(result.message || "Gagal menghapus data.");
+      throw new Error(result.message || "Gagal menghapus laporan.");
     }
     await muatDataTabel();
   } catch (error) {
     window.alert(error.message || "Terjadi kesalahan saat menghapus.");
+  }
+}
+
+async function tandaiSelesai(id) {
+  if (!window.confirm("Tandai laporan ini sebagai Sudah Dikerjakan?")) {
+    return;
+  }
+  
+  const report = cachedReports.get(id);
+  if (!report) return;
+
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  const payload = {
+    id: id,
+    keterangan: "Sudah Dikerjakan",
+    tanggalDiselesaikan: today
+  };
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Gagal menyimpan status.");
+    }
+    await muatDataTabel();
+  } catch (error) {
+    window.alert(error.message || "Terjadi kesalahan saat menyimpan status.");
   }
 }
 

@@ -147,6 +147,16 @@
     color: #ffffff;
 }
 
+.btn-done {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+.btn-done:hover {
+    background-color: #16a34a;
+    color: #ffffff;
+}
+
 /* =========================================
    MODAL EDIT STYLING
    ========================================= */
