@@ -11,7 +11,7 @@ function setTableMessage(message, isError = false) {
   tableBody.innerHTML = "";
   const row = document.createElement("tr");
   const cell = document.createElement("td");
-  cell.colSpan = 8;
+  cell.colSpan = 9;
   cell.style.textAlign = "center";
   if (isError) {
     cell.style.color = "#ef4444";
@@ -62,6 +62,7 @@ function renderReports(reports) {
       fotoCell.textContent = "-";
     }
     row.appendChild(fotoCell);
+    row.appendChild(createCell(item.keterangan || "Belum Diproses"));
 
     const actionCell = document.createElement("td");
     actionCell.className = "action-buttons";
@@ -121,6 +122,17 @@ function editData(id) {
       if (matched) jenisSelect.value = matched.value;
   }
   
+  // Set Keterangan
+  const keteranganSelect = document.getElementById("editKeterangan");
+  if (report.keterangan) {
+      let matchedKet = Array.from(keteranganSelect.options).find(opt => opt.value === report.keterangan);
+      if (matchedKet) keteranganSelect.value = matchedKet.value;
+  } else {
+      keteranganSelect.value = "Belum Diproses";
+  }
+
+  document.getElementById("editTanggalDiselesaikan").value = report.tanggalDiselesaikan && report.tanggalDiselesaikan !== "-" ? report.tanggalDiselesaikan : "";
+  
   editUraianInput.value = report.uraian || "";
   editModal.style.display = "flex";
 }
@@ -137,6 +149,8 @@ async function simpanEdit() {
   const nomorIdentitas = document.getElementById("editIdentitas").value.trim();
   const tempat = document.getElementById("editTempat").value;
   const jenisAduan = document.getElementById("editJenis").value;
+  const keterangan = document.getElementById("editKeterangan").value;
+  const tanggalDiselesaikan = document.getElementById("editTanggalDiselesaikan").value || "-";
   const uraian = editUraianInput.value.trim();
 
   if (!id || !uraian || !nama || !nomorIdentitas) {
@@ -145,7 +159,7 @@ async function simpanEdit() {
   }
 
   try {
-    const payload = { id, tanggal, nama, statusPelapor, nomorIdentitas, tempat, jenisAduan, uraian };
+    const payload = { id, tanggal, nama, statusPelapor, nomorIdentitas, tempat, jenisAduan, uraian, keterangan, tanggalDiselesaikan };
     const response = await fetch(API_URL, {
       method: "PUT",
       headers: {

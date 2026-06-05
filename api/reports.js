@@ -154,6 +154,8 @@ module.exports = async (req, res) => {
         jenisAduan,
         uraian,
         foto: fotoUrl,
+        keterangan: "Belum Diproses",
+        tanggalDiselesaikan: "-",
         createdAt: now,
         updatedAt: now,
       };
@@ -202,6 +204,8 @@ module.exports = async (req, res) => {
       if (body.tempat !== undefined || body.laboratorium !== undefined) updateData.tempat = String(body.tempat || body.laboratorium || "").trim();
       if (body.jenisAduan !== undefined) updateData.jenisAduan = String(body.jenisAduan || "").trim();
       if (body.uraian !== undefined) updateData.uraian = String(body.uraian || "").trim();
+      if (body.keterangan !== undefined) updateData.keterangan = String(body.keterangan || "").trim();
+      if (body.tanggalDiselesaikan !== undefined) updateData.tanggalDiselesaikan = String(body.tanggalDiselesaikan || "").trim();
       
       updateData.updatedAt = new Date().toISOString();
 
