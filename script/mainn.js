@@ -11,7 +11,7 @@ function setTableMessage(message, isError = false) {
   tableBody.innerHTML = "";
   const row = document.createElement("tr");
   const cell = document.createElement("td");
-  cell.colSpan = 9;
+  cell.colSpan = 10;
   cell.style.textAlign = "center";
   if (isError) {
     cell.style.color = "#ef4444";
@@ -63,6 +63,7 @@ function renderReports(reports) {
     }
     row.appendChild(fotoCell);
     row.appendChild(createCell(item.keterangan || "Belum Diproses"));
+    row.appendChild(createCell(item.tanggalDiselesaikan || "-"));
 
     const actionCell = document.createElement("td");
     const actionDiv = document.createElement("div");
