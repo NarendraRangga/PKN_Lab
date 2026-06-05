@@ -65,14 +65,15 @@ function renderReports(reports) {
     row.appendChild(createCell(item.keterangan || "Belum Diproses"));
 
     const actionCell = document.createElement("td");
-    actionCell.className = "action-buttons";
+    const actionDiv = document.createElement("div");
+    actionDiv.className = "action-buttons";
 
     if (item.keterangan !== "Sudah Dikerjakan") {
         const doneBtn = document.createElement("button");
         doneBtn.className = "btn-done";
         doneBtn.textContent = "Selesai";
         doneBtn.addEventListener("click", () => tandaiSelesai(item.id));
-        actionCell.appendChild(doneBtn);
+        actionDiv.appendChild(doneBtn);
     }
 
     const editBtn = document.createElement("button");
@@ -85,8 +86,9 @@ function renderReports(reports) {
     deleteBtn.textContent = "Hapus";
     deleteBtn.addEventListener("click", () => hapusData(item.id));
 
-    actionCell.appendChild(editBtn);
-    actionCell.appendChild(deleteBtn);
+    actionDiv.appendChild(editBtn);
+    actionDiv.appendChild(deleteBtn);
+    actionCell.appendChild(actionDiv);
     row.appendChild(actionCell);
 
     tableBody.appendChild(row);
