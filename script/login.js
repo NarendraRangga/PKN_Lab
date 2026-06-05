@@ -19,6 +19,11 @@ loginForm.addEventListener("submit", async (e) => {
         alert("Login failed: " + error.message);
     } else {
         alert("Login successful!");
-        window.location.href = "admin/index.html";
+        const role = data.user.user_metadata?.role;
+        if (role === 'reporter') {
+            window.location.href = "user/index.html";
+        } else {
+            window.location.href = "admin/index.html";
+        }
     }
 });

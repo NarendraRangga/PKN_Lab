@@ -340,6 +340,9 @@ async function simpanAkun() {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
+  const roleInput = document.getElementById("akunRole");
+  const role = roleInput ? roleInput.value : "reporter";
+
   if (!email || !password) {
       window.alert("Email dan password wajib diisi.");
       return;
@@ -354,6 +357,11 @@ async function simpanAkun() {
       const { data, error } = await window.supabaseClient.auth.signUp({
           email: email,
           password: password,
+          options: {
+              data: {
+                  role: role
+              }
+          }
       });
 
       if (error) {
